@@ -1,4 +1,4 @@
-import enicar.utils.LoggerManager;
+import mariopatterns.utils.LoggerManager;
 
 public class TestLogger {
     public static void main(String[] args) {
