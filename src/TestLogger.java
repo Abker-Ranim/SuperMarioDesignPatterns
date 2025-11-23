@@ -1,4 +1,5 @@
 import mariopatterns.game.GameContext;
+import mariopatterns.player.Player;
 import mariopatterns.utils.LoggerManager;
 
 import java.awt.event.KeyEvent;
@@ -6,35 +7,20 @@ import java.awt.event.KeyEvent;
 public class TestLogger {
     public static void main(String[] args) throws InterruptedException {
         GameContext game = new GameContext();
+        Player player = new Player(game);
 
-        System.out.println("TEST STATE PATTERN - Regarde game.log dans 15 secondes !");
+        System.out.println("TEST PLAYER STATES – regarde game.log !");
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 80; i++) {
+            player.update();
             game.update();
-            Thread.sleep(300);
+            Thread.sleep(100);
 
-            // === Simulation des appuis de touche ===
-            if (i == 10) {
-                System.out.println("→ Simule appui ENTRÉE");
-                game.keyPressed(10);   // 10 = VK_ENTER
-            }
-            if (i == 12) game.keyReleased(10);
-
-            if (i == 20) {
-                System.out.println("→ Simule appui P (pause)");
-                game.keyPressed(80);   // 80 = VK_P
-            }
-            if (i == 25) {
-                System.out.println("→ Relâche P → reprend");
-                game.keyReleased(80);
-                game.keyPressed(80);
-            }
-            if (i == 27) game.keyReleased(80);
-
-            if (i == 35) {
-                System.out.println("→ Simule appui Q → Game Over");
-                game.keyPressed(81);   // 81 = VK_Q
-            }
+            // Simulation inputs
+            if (i == 20) { player.keyPressed(KeyEvent.VK_RIGHT); System.out.println("→ DROITE"); }
+            if (i == 40) { player.keyReleased(KeyEvent.VK_RIGHT); System.out.println("→ Relâche"); }
+            if (i == 50) { player.keyPressed(KeyEvent.VK_SPACE); System.out.println("→ SAUT"); }
+            if (i == 70) { player.onCollisionWithEnemy(); System.out.println("→ Collision ennemi !"); }
         }
     }
 }
