@@ -1,6 +1,8 @@
 package mariopatterns.player;
 
 import mariopatterns.game.GameContext;
+import mariopatterns.player.decorator.BasePlayer;
+import mariopatterns.player.decorator.PlayerComponent;
 import mariopatterns.player.state.IdleState;
 import mariopatterns.player.state.PlayerState;
 
@@ -13,10 +15,15 @@ public class Player {
     private PlayerState currentState = new IdleState();
     private final GameContext gameContext;
     private final Set<Integer> pressedKeys = new HashSet<>();
+    public PlayerComponent renderablePlayer;
 
+    public void applyPowerUp(PlayerComponent decorator) {
+        this.renderablePlayer = decorator;
+    }
     public Player(GameContext gameContext) {
         this.gameContext = gameContext;
         currentState.enter(this);
+        this.renderablePlayer = new BasePlayer(this);
     }
 
     public void setState(PlayerState newState) {
