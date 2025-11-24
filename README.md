@@ -37,19 +37,41 @@ Fonctionnalités complètes : 2 niveaux, système de score sauvegardé, écran G
 - Ressources embarquées (images + sons)
 - Architecture modulaire et extensible
 
+ 
 
 ## Structure du projet
+
+```plaintext
 src/
 └── mariopatterns/
-├── game/          → États du jeu, GameContext, GamePanel
-├── player/        → Player, états (IdleState, JumpingState, DeadState...)
-├── level/         → LevelManager, CompositeGameObject
-├── ui/          → MenuPanel, GameOverPanel, VictoryPanel
-└── utils/         → SoundManager, LoggerManager, SaveData, ImageLoader
-resources/
-├── images/           → Sprites Mario, blocs, ennemis
-└── sounds/           → Tous les sons (.wav)
+    ├─ game/          Game logic & states
+    │   ├─ GameContext.java
+    │   ├─ GamePanel.java
+    │   └─ state/     Playing, Victory, Dead...
+    │
+    ├─ player/        Mario & ses états
+    │   ├─ Player.java
+    │   └─ state/     Idle, Running, Jumping...
+    │
+    ├─ level/         Gestion des niveaux
+    │   ├─ LevelManager.java
+    │   └─ CompositeGameObject.java
+    │
+    ├─ ui/            Interfaces (menu, victory, game over)
+    │   ├─ MenuPanel.java
+    │   ├─ VictoryPanel.java
+    │   └─ GameOverPanel.java
+    │
+    └─ utils/         Outils réutilisables
+        ├─ SoundManager.java
+        ├─ LoggerManager.java
+        ├─ SaveData.java
+        └─ ImageLoader.java
 
+resources/
+├─ images/    Tous les sprites Mario
+└─ sounds/    Sons authentiques (.wav)
+```
 ## Installation & Lancement
 
 ### Prérequis
@@ -60,3 +82,7 @@ resources/
 ```bash
 git clone https://github.com/ton-pseudo/SuperMario-DesignPatterns.git
 cd SuperMario-DesignPatterns
+
+
+
+
