@@ -1,0 +1,7 @@
+# Super Mario - High Scores
+# Format: NOM:SCORE
+MARIO:5000
+LUIGI:3200
+PEACH:1800
+
+AA:100
