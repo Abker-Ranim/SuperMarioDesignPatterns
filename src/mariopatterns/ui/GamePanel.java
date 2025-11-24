@@ -14,7 +14,7 @@ import java.awt.event.KeyEvent;
 
 public class GamePanel extends JPanel {
     private final GameContext gameContext;
-    private final Player player;
+    final Player player;
     private final LevelManager levelManager;
     private String playerName = "MARIO";
 
@@ -24,7 +24,9 @@ public class GamePanel extends JPanel {
 
     public String getPlayerName() { return playerName; }
     public GameContext getGameContext() { return gameContext; }
-
+    public LevelManager getLevelManager() {
+        return levelManager;
+    }
     public GamePanel() {
         gameContext = new GameContext();
         player = new Player(gameContext);
@@ -66,22 +68,19 @@ public class GamePanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        // ON FORCE L'EFFACEMENT DU FOND SANS COULEUR PAR DÉFAUT
-        g.clearRect(0, 0, getWidth(), getHeight());
+        Graphics2D g2d = (Graphics2D) g.create();
 
-        Graphics2D g2d = (Graphics2D) g;
 
-        // 1. Fond du niveau (forêt ou désert) → dessiné en premier
         levelManager.render(g2d);
 
-        // 2. Mario → par-dessus
         player.render(g2d);
 
-        // 3. HUD → toujours visible
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Arial Black", Font.BOLD, 28));
         g2d.drawString(playerName, 30, 60);
         g2d.drawString("SCORE: " + gameContext.getScore(), 30, 100);
         g2d.drawString("LEVEL " + levelManager.getCurrentLevel(), 550, 60);
+
+        g2d.dispose();  // libère les ressources
     }
 }

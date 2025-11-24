@@ -70,4 +70,8 @@ public class GameContext {
     public GameState getCurrentState() {
         return currentState;
     }
+    public void resetScore() {
+        this.score = 0;
+        LoggerManager.getInstance().logInfo("Score remis à zéro pour une nouvelle partie !");
+    }
 }

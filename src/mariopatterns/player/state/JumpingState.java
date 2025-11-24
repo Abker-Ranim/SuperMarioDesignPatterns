@@ -1,5 +1,6 @@
 package mariopatterns.player.state;
 
+import mariopatterns.game.state.VictoryState;
 import mariopatterns.gameobject.GameObject;
 import mariopatterns.gameobject.Platform;
 import mariopatterns.player.Player;
@@ -19,19 +20,24 @@ public class JumpingState extends AbstractPlayerState {
 
     @Override
     public void update(Player player) {
+        // Si on est en Victory → Mario ne tombe plus jamais
+        if (player.getGameContext().getCurrentState() instanceof VictoryState) {
+            return;
+        }
+
         // Gravité
         player.y += player.velocityY;
         player.velocityY += 0.6;
         jumpTimer++;
 
-        // ATTERRISSAGE SUR PLATEFORME
+        // Atterrissage
         if (player.velocityY > 0 && player.isOnGround()) {
             player.velocityY = 0;
             changeState(player, new IdleState(), "IDLE");
             return;
         }
 
-        // Mort si tombe trop bas
+        // Mort si tombe trop bas → MAIS PAS EN VICTORY !
         if (player.y > 700) {
             changeState(player, new DeadState(), "DEAD");
         }

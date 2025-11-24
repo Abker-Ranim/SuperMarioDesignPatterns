@@ -9,6 +9,7 @@ public class Enemy implements GameObject {
     public int x, y;
     private int dir = 1;
     private final Player player;
+    private Platform platform;
     private static final BufferedImage SPINY = ImageLoader.load("/resources/enemies/spiny.png");
 
     public Enemy(int x, int y, Player player) {
@@ -16,13 +17,21 @@ public class Enemy implements GameObject {
         this.y = y;
         this.player = player;
     }
-
+    public void setPlatform(Platform platform) { this.platform = platform; }
     @Override
     public void update() {
         x += dir * 2;
-        if (x < 50 || x > 750) dir *= -1;
 
-        // Collision = Game Over
+        // Inverse direction aux bords de la plateforme
+        if (platform != null) {
+            if (x <= platform.x || x >= platform.x + platform.width - 50) {
+                dir *= -1;
+            }
+        } else if (x < 50 || x > 750) {
+            dir *= -1;
+        }
+
+        // Collision avec Mario
         if (Math.abs(x - player.x) < 45 && Math.abs(y - player.y) < 60) {
             player.onCollisionWithEnemy();
         }

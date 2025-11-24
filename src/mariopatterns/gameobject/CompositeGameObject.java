@@ -24,4 +24,8 @@ public class CompositeGameObject implements GameObject {
 
     @Override
     public boolean isAlive() { return true; }
+
+    public List<GameObject> getChildren() {
+        return children;
+    }
 }

@@ -15,8 +15,7 @@ public class BasePlayer implements PlayerComponent {
 
     @Override public void update() { player.update(); }
     @Override public void render(Graphics2D g) {
-        g.setColor(Color.BLUE);
-        g.fillRect(player.x, player.y, 40, 60);
+
     }
 
     @Override public int getX() { return player.x; }

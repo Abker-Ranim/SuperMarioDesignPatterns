@@ -1,6 +1,8 @@
 package mariopatterns.player;
 
 import mariopatterns.game.GameContext;
+import mariopatterns.gameobject.GameObject;
+import mariopatterns.gameobject.Platform;
 import mariopatterns.player.decorator.BasePlayer;
 import mariopatterns.player.decorator.PlayerComponent;
 import mariopatterns.player.state.IdleState;
@@ -16,11 +18,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Player {
-    public int x = 100, y = 400;
+    public int x = 50, y = 430;
     public double velocityY = 0;
     private PlayerState currentState = new IdleState();
     private final GameContext gameContext;
-    private final Set<Integer> pressedKeys = new HashSet<>();
+    public final Set<Integer> pressedKeys = new HashSet<>();
     public PlayerComponent renderablePlayer;
 
     // TES SPRITES
@@ -47,25 +49,35 @@ public class Player {
         animTimer++; // pour l'animation
     }
 
-    // Ajoute cette méthode dans ta classe Player.java
     public void render(Graphics2D g) {
         BufferedImage currentSprite;
 
+        // ON UTILISE LES IMAGES DÉJÀ CHARGÉES (static) → AUCUN ImageLoader.load() ici !
         if (currentState instanceof mariopatterns.player.state.JumpingState) {
-            currentSprite = ImageLoader.load("/resources/player/mario_jump.png");
+            currentSprite = MARIO_JUMP;
         } else if (currentState instanceof mariopatterns.player.state.RunningState) {
-            currentSprite = ImageLoader.load("/resources/player/mario_run.png");
+            currentSprite = MARIO_RUN;
         } else {
-            currentSprite = ImageLoader.load("/resources/player/mario_stand.png");
+            currentSprite = MARIO_STAND;
         }
 
+        // Si l'image est null → on dessine un rectangle rouge pour debug
+        if (currentSprite == null) {
+            g.setColor(Color.RED);
+            g.fillRect(x, y, 50, 70);
+            g.setColor(Color.WHITE);
+            g.drawString("IMG NULL", x, y + 35);
+            return;
+        }
+
+        // Dessin avec flip si on va à gauche
         if (isKeyPressed(KeyEvent.VK_LEFT)) {
-            g.drawImage(currentSprite, x + 50, y, -50, 70, null);
+            g.drawImage(currentSprite, x + 50, y, -50, 70, null);  // flip horizontal
         } else {
-            g.drawImage(currentSprite, x, y, 50, 70, null);
+            g.drawImage(currentSprite, x, y, 50, 70, null);        // normal
         }
 
-        // Effets power-up
+        // Power-up (Decorator)
         if (renderablePlayer != null) {
             renderablePlayer.render(g);
         }
@@ -79,4 +91,28 @@ public class Player {
     public void keyReleased(int keyCode) { pressedKeys.remove(keyCode); }
     public boolean isKeyPressed(int keyCode) { return pressedKeys.contains(keyCode); }
     public GameContext getGameContext() { return gameContext; }
+    // AJOUTE CETTE MÉTHODE À LA FIN DE TA CLASSE Player.java (juste avant la dernière accolade)
+// Dans Player.java → ajoute cette méthode pour l'atterrissage
+    public boolean isOnGround() {
+        var gamePanel = gameContext.getGamePanel();
+        if (gamePanel == null) return y >= 480;
+
+        var levelManager = gamePanel.getLevelManager();
+        if (levelManager == null) return y >= 480;
+
+        var objects = levelManager.getCurrentLevelObjects();
+        if (objects == null) return y >= 480;
+
+        int marioBottom = y + 70;
+
+        for (GameObject obj : objects.getChildren()) {
+            if (obj instanceof Platform p) {
+                if (marioBottom >= p.y - 10 && marioBottom <= p.y + 30 &&
+                        x + 50 > p.x && x < p.x + p.width) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
