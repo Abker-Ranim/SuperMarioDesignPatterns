@@ -28,7 +28,7 @@ Fonctionnalités complètes : 2 niveaux, système de score sauvegardé, écran G
 | **Composite**         | Gestion hiérarchique de tous les objets du niveau (blocks, enemies, player, coins) | `CompositeGameObject`, `LevelManager`       |
 | **Facade**            | Point d’entrée unique pour toute la logique du jeu                     | `GameContext`                               |
 | **Strategy** (via State) | Chaque état du joueur définit un comportement différent               | Tous les `PlayerState`                      |
-| **MVC** (quasi-complet) | Séparation claire Model / View / Controller                           | `Player` + `LevelManager` / `GamePanel` / `GameContext` + States |
+
 
 ## Technologies utilisées
 
