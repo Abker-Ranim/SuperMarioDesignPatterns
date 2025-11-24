@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class MenuPanel extends JPanel {
     private final CardLayout cardLayout;
@@ -42,7 +43,7 @@ public class MenuPanel extends JPanel {
 
         addButton(menuBox, "NEW GAME", marioFont, Color.ORANGE, e -> showNameInput());
         addButton(menuBox, "CONTINUE", marioFont, Color.CYAN, e -> startGame("Player"));
-        addButton(menuBox, "SCOREBOARD", marioFont, Color.MAGENTA, e -> JOptionPane.showMessageDialog(this, "Pas encore implémenté !"));
+        addButton(menuBox, "SCOREBOARD", marioFont, Color.MAGENTA, e -> showScoreboard());
         addButton(menuBox, "EXIT", marioFont, Color.RED, e -> System.exit(0));
 
         background.add(menuBox);
@@ -94,8 +95,29 @@ public class MenuPanel extends JPanel {
     }
 
     private void startGame(String playerName) {
-        GamePanel gamePanel = (GamePanel) mainPanel.getComponent(1); // on suppose que GamePanel est le 2ème
+        GamePanel gamePanel = (GamePanel) mainPanel.getComponent(1);
         gamePanel.setPlayerName(playerName);
+
+        // AJOUTE CETTE LIGNE MAGIQUE :
+        gamePanel.getGameContext().setState(new mariopatterns.game.state.PlayingState());
         cardLayout.show(mainPanel, "GAME");
+    }
+
+    private void showScoreboard() {
+        List<String> top = SaveData.getInstance().getTopScores(10);
+        StringBuilder sb = new StringBuilder("<html><h1 style='color:gold;'> SCORES</h1><ol>");
+        for (String s : top) {
+            String[] parts = s.split(":");
+            sb.append("<li><b>").append(parts[0]).append("</b> → ").append(parts[1]).append(" points</li>");
+        }
+        sb.append("</ol></html>");
+
+        JLabel label = new JLabel(sb.toString());
+        label.setFont(new Font("Arial", Font.BOLD, 20));
+        label.setForeground(Color.WHITE);
+        label.setBackground(new Color(0, 0, 0, 180));
+        label.setOpaque(true);
+
+        JOptionPane.showMessageDialog(this, label, "High Scores", JOptionPane.INFORMATION_MESSAGE);
     }
 }
