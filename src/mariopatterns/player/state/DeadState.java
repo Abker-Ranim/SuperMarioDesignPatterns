@@ -3,6 +3,7 @@ package mariopatterns.player.state;
 import mariopatterns.game.GameContext;
 import mariopatterns.player.Player;
 import mariopatterns.ui.GameOverPanel;
+import mariopatterns.utils.SoundManager;
 
 import java.awt.*;
 
@@ -11,7 +12,7 @@ public class DeadState extends AbstractPlayerState {
     @Override
     public void enter(Player player) {
         logger.logState("Player: DEAD");
-
+        SoundManager.getInstance().playGameOver();
         GameContext gc = player.getGameContext();
         String name = gc.getGamePanel().getPlayerName();
         gc.saveFinalScore(name);

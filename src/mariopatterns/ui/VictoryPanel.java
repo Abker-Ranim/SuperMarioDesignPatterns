@@ -6,6 +6,7 @@ import mariopatterns.game.state.PlayingState;
 import mariopatterns.player.Player;
 import mariopatterns.player.state.IdleState;
 import mariopatterns.utils.MenuPanel;
+import mariopatterns.utils.SoundManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -81,6 +82,8 @@ public class VictoryPanel extends JPanel {
 
         cardLayout.show(mainPanel, "GAME");
         gamePanel.requestFocusInWindow();
+        SoundManager.getInstance().play1UP();
+
     }
 
     private void replayFromStart() {

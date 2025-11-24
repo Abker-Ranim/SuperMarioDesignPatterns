@@ -2,6 +2,8 @@ package mariopatterns.game.state;
 
 import mariopatterns.game.GameContext;
 import mariopatterns.ui.VictoryPanel;
+import mariopatterns.utils.SoundManager;
+
 import java.awt.*;
 
 public class VictoryState extends AbstractGameState {
@@ -12,12 +14,17 @@ public class VictoryState extends AbstractGameState {
     public void enter(GameContext context) {
         logger.logInfo("VICTORY STATE ENTERED");
 
-        // On donne le bonus QU'UNE SEULE FOIS
         if (!bonusGiven) {
             int currentLevel = context.getGamePanel().getLevelManager().getCurrentLevel();
             int bonus = 1000 * currentLevel;
             context.addScore(bonus);
             logger.logInfo("Bonus level " + currentLevel + " : +" + bonus + " points");
+
+            // SON DE VICTOIRE SEULEMENT POUR LEVEL 1 !
+            if (currentLevel == 1) {
+                SoundManager.getInstance().playVictory();
+            }
+
             bonusGiven = true;
         }
 

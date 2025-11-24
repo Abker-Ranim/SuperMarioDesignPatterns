@@ -4,6 +4,8 @@ import mariopatterns.game.GameContext;
 import mariopatterns.player.Player;
 import mariopatterns.player.state.IdleState;
 import mariopatterns.game.state.PlayingState;
+import mariopatterns.utils.SoundManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -105,6 +107,7 @@ public class GameOverPanel extends JPanel {
         // Switch + FOCUS (LA CLÉ !)
         cardLayout.show(mainPanel, "GAME");
         gamePanel.requestFocusInWindow();  // ← ÇA RÉPARE TOUT !
+        SoundManager.getInstance().play1UP();
 
         // Petit repaint pour fluidité
         gamePanel.repaint();

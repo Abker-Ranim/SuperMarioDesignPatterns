@@ -37,6 +37,32 @@ public class GamePanel extends JPanel {
         setPreferredSize(new Dimension(800, 600));
         setDoubleBuffered(true);  // fluidité max
         setFocusable(true);
+        // AJOUT DU BOUTON EXIT EN BAS À DROITE
+        JButton exitButton = new JButton("EXIT");
+        exitButton.setFont(new Font("Arial Black", Font.BOLD, 18));
+        exitButton.setForeground(Color.WHITE);
+        exitButton.setBackground(new Color(180, 0, 0));
+        exitButton.setOpaque(true);
+        exitButton.setBorderPainted(false);
+        exitButton.setFocusPainted(false);
+        exitButton.setBounds(700, 540, 90, 40);  // Position bas droite
+
+        // Effet hover
+        exitButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                exitButton.setBackground(new Color(255, 50, 50));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                exitButton.setBackground(new Color(180, 0, 0));
+            }
+        });
+
+        // Action : quitte le jeu
+        exitButton.addActionListener(e -> System.exit(0));
+
+        // Important : on utilise un layout null pour positionner manuellement
+        setLayout(null);
+        add(exitButton);
         requestFocusInWindow();
 
         addKeyListener(new KeyAdapter() {

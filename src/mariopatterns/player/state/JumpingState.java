@@ -4,6 +4,8 @@ import mariopatterns.game.state.VictoryState;
 import mariopatterns.gameobject.GameObject;
 import mariopatterns.gameobject.Platform;
 import mariopatterns.player.Player;
+import mariopatterns.utils.SoundManager;
+
 import java.awt.event.KeyEvent;
 
 public class JumpingState extends AbstractPlayerState {
@@ -58,6 +60,11 @@ public class JumpingState extends AbstractPlayerState {
             player.velocityY = -12;  // nouveau saut
             canDoubleJump = false;
             logger.logState("Player: DOUBLE JUMP !");
+        }
+        if (player.isKeyPressed(KeyEvent.VK_SPACE) && player.isOnGround()) {
+            player.velocityY = -12;
+            SoundManager.getInstance().playJump();  // AJOUTE ÇA
+            changeState(player, new JumpingState(), "JUMPING");
         }
     }
 

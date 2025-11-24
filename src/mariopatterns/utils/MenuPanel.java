@@ -97,7 +97,7 @@ public class MenuPanel extends JPanel {
     private void startGame(String playerName) {
         GamePanel gamePanel = (GamePanel) mainPanel.getComponent(1);
         gamePanel.setPlayerName(playerName);
-
+        SoundManager.getInstance().play1UP();
         // AJOUTE CETTE LIGNE MAGIQUE :
         gamePanel.getGameContext().setState(new mariopatterns.game.state.PlayingState());
         cardLayout.show(mainPanel, "GAME");
