@@ -37,4 +37,26 @@ Fonctionnalités complètes : 2 niveaux, système de score sauvegardé, écran G
 - Ressources embarquées (images + sons)
 - Architecture modulaire et extensible
 
+
 ## Structure du projet
+src/
+└── mariopatterns/
+├── game/          → États du jeu, GameContext, GamePanel
+├── player/        → Player, états (IdleState, JumpingState, DeadState...)
+├── level/         → LevelManager, CompositeGameObject
+├── ui/          → MenuPanel, GameOverPanel, VictoryPanel
+└── utils/         → SoundManager, LoggerManager, SaveData, ImageLoader
+resources/
+├── images/           → Sprites Mario, blocs, ennemis
+└── sounds/           → Tous les sons (.wav)
+
+## Installation & Lancement
+
+### Prérequis
+- JDK 17 ou supérieur
+- IDE (IntelliJ IDEA recommandé) ou ligne de commande
+
+### Étapes
+```bash
+git clone https://github.com/ton-pseudo/SuperMario-DesignPatterns.git
+cd SuperMario-DesignPatterns
