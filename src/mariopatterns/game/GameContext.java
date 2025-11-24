@@ -2,6 +2,9 @@ package mariopatterns.game;
 
 import mariopatterns.game.state.GameState;
 import mariopatterns.game.state.MenuState;
+import mariopatterns.ui.GamePanel;
+import mariopatterns.utils.LoggerManager;
+import mariopatterns.utils.SaveData;
 
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
@@ -12,6 +15,7 @@ public class GameContext {
     private int score = 0;
     private final Set<Integer> pressedKeys = new HashSet<>();
     private final Set<Integer> justPressedKeys = new HashSet<>();
+    private GamePanel gamePanel;
 
     public GameContext() {
         setState(new MenuState());
@@ -21,7 +25,13 @@ public class GameContext {
         this.currentState = newState;
         newState.enter(this);
     }
+    public void setGamePanel(GamePanel panel) {
+        this.gamePanel = panel;
+    }
 
+    public GamePanel getGamePanel() {
+        return gamePanel;
+    }
     public void update() {
         justPressedKeys.clear();
         justPressedKeys.addAll(pressedKeys);
@@ -47,5 +57,17 @@ public class GameContext {
     }
 
     public int getScore() { return score; }
-    public void addScore(int points) { this.score += points; }
+
+    public void addScore(int points) {
+        this.score += points;
+        LoggerManager.getInstance().logInfo("Score + " + points + " → Total: " + score);
+    }
+
+    public void saveFinalScore(String playerName) {
+        SaveData.getInstance().saveScore(playerName, score);
+        LoggerManager.getInstance().logInfo("Score final sauvegardé pour " + playerName + " : " + score);
+    }
+    public GameState getCurrentState() {
+        return currentState;
+    }
 }
