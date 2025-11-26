@@ -23,19 +23,7 @@ public class Platform implements GameObject {
     // VERSION DEBUG : LIGNES ROUGES VISIBLES !
     @Override
     public void render(Graphics2D g) {
-        g.setColor(Color.RED);
-        g.setStroke(new BasicStroke(3));
-        g.drawRect(x, y, width, height);
 
-        // Ligne du haut (où Mario atterrit)
-        g.setColor(Color.YELLOW);
-        g.setStroke(new BasicStroke(2));
-        g.drawLine(x, y, x + width, y);
-
-        // Petits repères aux coins
-        g.setColor(Color.WHITE);
-        g.fillOval(x - 5, y - 5, 10, 10);
-        g.fillOval(x + width - 5, y - 5, 10, 10);
     }
 
     @Override
