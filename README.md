@@ -1,76 +1,90 @@
-# Super Mario - Design Patterns Edition
+# Super Mario – Design Patterns Edition
 
-Un clone fidèle de **Super Mario Bros** développé en **Java pur (Swing)** dans le but de démontrer une **architecture propre et avancée** basée sur les **Design Patterns**.
+Un **clone ultra-fidèle de Super Mario Bros** développé en **Java 17 pur (Swing/AWT)** dans le seul but de démontrer une **architecture logicielle avancée, propre et extensible** grâce à **8 vrais Design Patterns** pleinement fonctionnels**.
 
-Fonctionnalités complètes : 2 niveaux, système de score sauvegardé, écran Game Over / Victory, sons, bouton EXIT en jeu, et surtout une architecture exemplaire.
+Le jeu est entièrement jouable : 2 niveaux complets, score persistant, sons authentiques, pièces qui tournent en 3D, power-up Speed Boost, victoire, game over… et surtout une architecture que même un architecte senior validerait.
 
 ## Aperçu du jeu
 
-<img width="586" height="420" alt="Capture d&#39;écran 2025-11-25 001956" src="https://github.com/user-attachments/assets/eb0f1d56-d798-48be-a242-ae2d00ccd388" />
+<img src="https://github.com/user-attachments/assets/eb0f1d56-d798-48be-a242-ae2d00ccd388" width="800" />
 
-
-## Fonctionnalités
-
-- 2 niveaux jouables (Level 1 & Level 2)
-- Score persistant (sauvegarde du meilleur score par joueur)
-- Écrans Game Over et Victory stylisés
-- Sons authentiques Mario (jump, coin, victory, stage start, game over)
-- Bouton EXIT en bas à droite pendant le jeu
-- Nom du joueur personnalisé
-- Architecture 100 % orientée objets et Design Patterns
+## Fonctionnalités jouables
+- 2 niveaux complets (Forêt + Désert) avec fonds différents
+- Speed Boost temporaire (x2 pendant 7 secondes + effet visuel vert)
+- Pièces avec rotation 3D autour de l’axe Y (comme dans les vrais Mario)
+- Score + HUD avec messages temporaires ("SPEED UP !", "COIN +100 !")
+- Sons authentiques (coin, jump, 1UP, victory, game over)
+- Écrans stylisés : Menu principal, Victory, Game Over
+- Bouton EXIT en jeu + nom du joueur personnalisé
+- Victoire immédiate en touchant le drapeau
 
 ## Design Patterns Implémentés (et vraiment utilisés !)
 
-| Pattern               | Utilisation concrète dans le projet                                      | Classe(s) principale(s)                     |
-|-----------------------|--------------------------------------------------------------------------|---------------------------------------------|
-| **State**             | États du joueur (Idle, Running, Jumping, Dead) + états du jeu (Playing, Victory, GameOver) | `PlayerState`, `GameState`, `PlayingState`, `VictoryState`, `DeadState` |
-| **Singleton**         | Gestionnaires uniques : sons, logs, sauvegarde, images                   | `SoundManager`, `LoggerManager`, `SaveData` |
-| **Composite**         | Gestion hiérarchique de tous les objets du niveau (blocks, enemies, player, coins) | `CompositeGameObject`, `LevelManager`       |
-| **Facade**            | Point d’entrée unique pour toute la logique du jeu                     | `GameContext`                               |
-| **Strategy** (via State) | Chaque état du joueur définit un comportement différent               | Tous les `PlayerState`                      |
+| Pattern              | Utilisation concrète dans le projet                                                                                         | Classe(s) principales                                      |
+|----------------------|------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------|
+| **State**            | États du joueur (Idle, Running, Jumping) + États du jeu (Playing, Victory, GameOver)                                              | `PlayerState`, `IdleState`, `RunningState`, `JumpingState`, `GameState` |
+| **Decorator**        | Power-ups temporaires (SpeedBoost → vitesse x2 + effet visuel + désactivation automatique)                                      | `PlayerComponent`, `BasePlayer`, `SpeedBoostDecorator`     |
+| **Composite**        | Tous les objets du niveau (plateformes, ennemis, items, coins, drapeau) gérés dans une seule structure                              | `CompositeGameObject`, `LevelManager`                      |
+| **Factory Method**   | Création centralisée de tous les objets (ennemis, items, plateformes, goal)                                                       | `GameObjectFactory`                                        |
+| **Abstract Factory** | Chaque niveau créé par sa propre factory → ajoute un niveau en 5 minutes                                                           | `LevelFactory`, `ForestLevelFactory`, `DesertLevelFactory` |
+| **Observer**         | Ramassage d’item/coin → notification automatique du score + HUD (zéro couplage)                                                   | `PlayerObserver`, `ScoreAndHudObserver`                    |
+| **Prototype**        | Clonage rapide des pièces (9 pièces → 1 prototype + boucle                                                                       | `Coin.clone()`, `ForestLevelFactory`                       |
+| **Singleton**        | Instances uniques pour sons, logs, sauvegarde                                                                                     | `SoundManager`, `LoggerManager`                            |
 
+8 Design Patterns → tous fonctionnels, tous nécessaires, zéro sur-engineering.
 
 ## Technologies utilisées
-
-- **Java 17** (Swing pour l’interface)
-- **Aucune dépendance externe** (tout est fait main)
-- Ressources embarquées (images + sons)
-- Architecture modulaire et extensible
-
- 
+- **Java 17** (Swing + AWT uniquement)
+- **Aucune dépendance externe** (tout fait main)
+- Ressources embarquées (sprites + sons .wav)
 
 ## Structure du projet
 
 ```plaintext
 src/
 └── mariopatterns/
-    ├─ game/          Game logic & states
-    │   ├─ GameContext.java
-    │   ├─ GamePanel.java
-    │   └─ state/     Playing, Victory, Dead...
+    ├─ factory/
+    │   ├─ GameObjectFactory.java
+    │   └─ level/
+    │       ├─ LevelFactory.java
+    │       ├─ ForestLevelFactory.java
+    │       └─ DesertLevelFactory.java
     │
-    ├─ player/        Mario & ses états
-    │   ├─ Player.java
-    │   └─ state/     Idle, Running, Jumping...
+    ├─ game/
+    │   ├─ GameContext.java          ← Facade du jeu
+    │   └─ state/                     ← États du jeu (Playing, Victory, GameOver...)
     │
-    ├─ level/         Gestion des niveaux
-    │   ├─ LevelManager.java
+    ├─ gameobject/
+    │   ├─ Coin.java                  ← Prototype + rotation 3D
+    │   ├─ SpeedItem.java
+    │   ├─ GoalFlag.java
+    │   ├─ Enemy.java
     │   └─ CompositeGameObject.java
     │
-    ├─ ui/            Interfaces (menu, victory, game over)
+    ├─ level/
+    │   └─ LevelManager.java          ← Utilise Abstract Factory
+    │
+    ├─ observer/
+    │   ├─ PlayerObserver.java
+    │   └─ ScoreAndHudObserver.java
+    │
+    ├─ player/
+    │   ├─ Player.java                ← State + Decorator + Observer
+    │   └─ decorator/                 ← BasePlayer, SpeedBoostDecorator
+    │
+    ├─ ui/                            ← ÉCRANS (Menu, Victory, Game Over)
     │   ├─ MenuPanel.java
     │   ├─ VictoryPanel.java
     │   └─ GameOverPanel.java
     │
-    └─ utils/         Outils réutilisables
-        ├─ SoundManager.java
-        ├─ LoggerManager.java
-        ├─ SaveData.java
+    └─ utils/
+        ├─ SoundManager.java        ← Singleton
+        ├─ LoggerManager.java        ← Singleton
         └─ ImageLoader.java
 
 resources/
-├─ images/    Tous les sprites Mario
-└─ sounds/    Sons authentiques (.wav)
+├─ images/
+└─ sounds/
 ```
 ## Installation & Lancement
 
