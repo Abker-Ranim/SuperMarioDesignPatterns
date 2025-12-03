@@ -37,13 +37,13 @@ public class MenuPanel extends JPanel {
 
         JLabel title = new JLabel("SUPER MARIO");
         title.setFont(new Font("Arial Black", Font.BOLD, 48));
-        title.setForeground(Color.YELLOW);
+        title.setForeground(Color.black);
         title.setHorizontalAlignment(SwingConstants.CENTER);
         menuBox.add(title, gbc);
 
-        addButton(menuBox, "NEW GAME", marioFont, Color.ORANGE, e -> showNameInput());
-        addButton(menuBox, "CONTINUE", marioFont, Color.CYAN, e -> startGame("Player"));
-        addButton(menuBox, "SCOREBOARD", marioFont, Color.MAGENTA, e -> showScoreboard());
+        addButton(menuBox, "NEW GAME", marioFont, Color.blue, e -> showNameInput());
+        addButton(menuBox, "CONTINUE", marioFont, Color.yellow, e -> startGame("Player"));
+        addButton(menuBox, "SCOREBOARD", marioFont, Color.green, e -> showScoreboard());
         addButton(menuBox, "EXIT", marioFont, Color.RED, e -> System.exit(0));
 
         background.add(menuBox);

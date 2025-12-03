@@ -16,6 +16,7 @@ public class SoundManager {
         loadSound("up", "/resources/sounds/up.wav");
         loadSound("victory", "/resources/sounds/victory.wav");
         loadSound("gameover", "/resources/sounds/gameover.wav");
+        loadSound("coin", "/resources/sounds/coin.wav"); // mets ton son ici
     }
 
     public static SoundManager getInstance() {
