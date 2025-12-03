@@ -3,6 +3,7 @@ package mariopatterns.player;
 import mariopatterns.game.GameContext;
 import mariopatterns.gameobject.GameObject;
 import mariopatterns.gameobject.Platform;
+import mariopatterns.observer.PlayerObserver;
 import mariopatterns.player.decorator.BasePlayer;
 import mariopatterns.player.decorator.PlayerComponent;
 import mariopatterns.player.decorator.SpeedBoostDecorator;
@@ -16,8 +17,10 @@ import mariopatterns.utils.LoggerManager;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 public class Player {
     public int x = 50, y = 430;
@@ -124,5 +127,26 @@ public class Player {
             }
         }
         return false;
+    }
+
+
+    // Dans Player.java → ajoute ces méthodes
+
+    public void collectCoin() {
+        notifyCoinCollected();  // → déclenche tous les observers
+    }
+
+    private final List<PlayerObserver> observers = new ArrayList<>();
+
+    public void addObserver(PlayerObserver observer) {
+        observers.add(observer);
+    }
+
+    private void notifySpeedBoost() {
+        observers.forEach(PlayerObserver::onSpeedBoostActivated);
+    }
+
+    private void notifyCoinCollected() {
+        observers.forEach(PlayerObserver::onCoinCollected);
     }
 }

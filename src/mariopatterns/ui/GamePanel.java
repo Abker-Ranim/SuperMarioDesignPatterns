@@ -3,6 +3,7 @@ package mariopatterns.ui;
 import mariopatterns.game.GameContext;
 import mariopatterns.level.Level;
 import mariopatterns.level.LevelManager;
+import mariopatterns.observer.ScoreAndHudObserver;
 import mariopatterns.player.Player;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ public class GamePanel extends JPanel {
     final Player player;
     private final LevelManager levelManager;
     private String playerName = "MARIO";
+    private final JLabel messageLabel = new JLabel();
 
     public void setPlayerName(String name) {
         this.playerName = name.toUpperCase();
@@ -31,6 +33,8 @@ public class GamePanel extends JPanel {
         gameContext = new GameContext();
         player = new Player(gameContext);
         levelManager = new LevelManager(player);
+// ABONNEMENT DE L'OBSERVER UNIQUE
+        player.addObserver(new ScoreAndHudObserver(gameContext, messageLabel));
 
         gameContext.setGamePanel(this);
 
@@ -62,6 +66,12 @@ public class GamePanel extends JPanel {
 
         // Important : on utilise un layout null pour positionner manuellement
         setLayout(null);
+        // Message temporaire (Speed Up / Coin)
+        messageLabel.setFont(new Font("Arial Black", Font.BOLD, 40));
+        messageLabel.setBounds(200, 150, 400, 80);
+        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        messageLabel.setVisible(false);
+        add(messageLabel);
         add(exitButton);
         requestFocusInWindow();
 
@@ -101,10 +111,10 @@ public class GamePanel extends JPanel {
 
         player.render(g2d);
 
-        g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Arial Black", Font.BOLD, 28));
-        g2d.drawString(playerName, 30, 60);
-        g2d.drawString("SCORE: " + gameContext.getScore(), 30, 100);
+        g2d.setColor(Color.black);
+        g2d.setFont(new Font("Arial Black", Font.BOLD, 22));
+        g2d.drawString(playerName, 30, 20);
+        g2d.drawString("SCORE: " + gameContext.getScore(), 30, 60);
         g2d.drawString("LEVEL " + levelManager.getCurrentLevel(), 550, 60);
 
         g2d.dispose();  // libère les ressources
