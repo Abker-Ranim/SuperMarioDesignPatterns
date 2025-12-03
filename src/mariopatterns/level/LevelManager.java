@@ -2,10 +2,7 @@ package mariopatterns.level;
 
 import mariopatterns.game.GameContext;
 import mariopatterns.game.state.VictoryState;
-import mariopatterns.gameobject.CompositeGameObject;
-import mariopatterns.gameobject.Enemy;
-import mariopatterns.gameobject.Platform;
-import mariopatterns.gameobject.SpeedItem;
+import mariopatterns.gameobject.*;
 import mariopatterns.player.Player;
 import mariopatterns.utils.ImageLoader;
 
@@ -67,7 +64,8 @@ public class LevelManager {
 
 
 
-
+            GoalFlag goal = new GoalFlag(740, 36, player); // x=750, y=420 (sol = 500 → mât de 180px)
+            currentLevelObjects.add(goal);
 
         } else { // Niveau 2 - Désert
             platforms.add(new Platform(0, 480, 800, 120));     // sol
@@ -111,5 +109,12 @@ public class LevelManager {
 
     public int getCurrentLevel() {
         return currentLevel;
+    }
+
+    public void triggerVictory() {
+        if (!victoryTriggered) {
+            victoryTriggered = true;
+            player.getGameContext().setState(new mariopatterns.game.state.VictoryState());
+        }
     }
 }
