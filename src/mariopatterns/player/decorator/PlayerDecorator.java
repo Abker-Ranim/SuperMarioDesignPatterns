@@ -1,5 +1,7 @@
 package mariopatterns.player.decorator;
 
+import mariopatterns.player.Player;
+
 import java.awt.Graphics2D;
 
 public abstract class PlayerDecorator implements PlayerComponent {
@@ -15,4 +17,16 @@ public abstract class PlayerDecorator implements PlayerComponent {
     @Override public int getY() { return decoratedPlayer.getY(); }
     @Override public double getSpeedMultiplier() { return decoratedPlayer.getSpeedMultiplier(); }
     @Override public boolean isInvincible() { return decoratedPlayer.isInvincible(); }
+
+    // Ajoutez l'implémentation
+    @Override
+    public Player getPlayer() {
+        return decoratedPlayer.getPlayer();
+    }
+
+    // Ajoutez updateDecorators()
+    @Override
+    public void updateDecorators() {
+        decoratedPlayer.updateDecorators();
+    }
 }

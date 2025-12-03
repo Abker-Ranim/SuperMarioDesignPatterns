@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class SpeedBoostDecorator extends PlayerDecorator {
     private final long startTime;
-    private final long duration = 8000; // 8 secondes
+    private final long duration = 7000; // 8 secondes
     private final LoggerManager logger = LoggerManager.getInstance();
 
     public SpeedBoostDecorator(PlayerComponent decoratedPlayer) {
@@ -16,11 +16,11 @@ public class SpeedBoostDecorator extends PlayerDecorator {
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void updateDecorators() {
+        super.updateDecorators();
         if (System.currentTimeMillis() - startTime > duration) {
-            logger.logDecorator("SpeedBoost removed from Player");
-            // On retire automatiquement le décorateur (dans le vrai jeu, on le fera proprement)
+            logger.logDecorator("SpeedBoost expiré et retiré du Player");
+            getPlayer().renderablePlayer = this.decoratedPlayer; // Unwrap proprement
         }
     }
 

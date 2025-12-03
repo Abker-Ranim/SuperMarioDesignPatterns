@@ -5,6 +5,7 @@ import mariopatterns.game.state.VictoryState;
 import mariopatterns.gameobject.CompositeGameObject;
 import mariopatterns.gameobject.Enemy;
 import mariopatterns.gameobject.Platform;
+import mariopatterns.gameobject.SpeedItem;
 import mariopatterns.player.Player;
 import mariopatterns.utils.ImageLoader;
 
@@ -60,6 +61,14 @@ public class LevelManager {
             Enemy enemyRight = new Enemy(780, 80, player);         // bien posé sur la plateforme haute droite
             enemyRight.setPlatform(platforms.get(6));
             currentLevelObjects.add(enemyRight);
+
+            SpeedItem speedItem = new SpeedItem(530, 400, player); // Exemple de position (ajustez : x=200, y=80, sur une plateforme)
+            currentLevelObjects.add(speedItem);
+
+
+
+
+
         } else { // Niveau 2 - Désert
             platforms.add(new Platform(0, 480, 800, 120));     // sol
             platforms.add(new Platform(50, 400, 180, 20));

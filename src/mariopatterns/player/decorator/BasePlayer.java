@@ -22,4 +22,13 @@ public class BasePlayer implements PlayerComponent {
     @Override public int getY() { return player.y; }
     @Override public double getSpeedMultiplier() { return 1.0; }
     @Override public boolean isInvincible() { return false; }
+    @Override
+    public Player getPlayer() {
+        return player;
+    }
+
+    @Override
+    public void updateDecorators() {
+        // Rien à faire pour la base
+    }
 }

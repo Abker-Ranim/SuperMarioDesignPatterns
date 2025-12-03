@@ -15,7 +15,7 @@ public class JumpingState extends AbstractPlayerState {
     @Override
     public void enter(Player player) {
         logger.logState("Player: JUMPING");
-        player.velocityY = -12;  // saut initial
+        player.velocityY = -10;  // saut initial
         jumpTimer = 0;
         canDoubleJump = true;  // permet le double jump
     }
@@ -29,7 +29,7 @@ public class JumpingState extends AbstractPlayerState {
 
         // Gravité
         player.y += player.velocityY;
-        player.velocityY += 0.6;
+        player.velocityY += 0.42;
         jumpTimer++;
 
         // Atterrissage
@@ -47,24 +47,35 @@ public class JumpingState extends AbstractPlayerState {
 
     @Override
     public void handleInput(Player player) {
-        // MARCHE EN L'AIR (contrôle horizontal pendant saut)
+        // Récupération du multiplicateur de vitesse (1.0 par défaut, 2.0 avec SpeedBoost)
+        double speedMultiplier = player.renderablePlayer.getSpeedMultiplier();
+
+        // === MOUVEMENT HORIZONTAL EN L'AIR ===
         if (player.isKeyPressed(KeyEvent.VK_LEFT)) {
-            player.x -= 4;  // vitesse réduite en l'air
+            player.x -= (int) (2 * speedMultiplier); // vitesse réduite en l’air
         }
         if (player.isKeyPressed(KeyEvent.VK_RIGHT)) {
-            player.x += 4;
+            player.x += (int) (2 * speedMultiplier);
         }
 
-        // DOUBLE JUMP (2ème saut en l'air)
-        if (player.isKeyPressed(KeyEvent.VK_SPACE) && canDoubleJump && jumpTimer < 15) {
-            player.velocityY = -12;  // nouveau saut
-            canDoubleJump = false;
-            logger.logState("Player: DOUBLE JUMP !");
+        // === DOUBLE JUMP (seulement si on n’a pas encore utilisé le 2ème saut) ===
+        if (player.isKeyPressed(KeyEvent.VK_SPACE) && canDoubleJump && jumpTimer > 8) {
+            player.velocityY = -10;           // impulsion du double saut
+            canDoubleJump = false;            // on ne peut plus double-jumper
+            SoundManager.getInstance().playJump();
+            logger.logState("Player: DOUBLE JUMP activé !");
         }
+
+        // === SAUT NORMAL QUAND ON EST AU SOL ===
+        // (même si on est déjà en JumpingState, ça permet de sauter immédiatement après atterrissage)
         if (player.isKeyPressed(KeyEvent.VK_SPACE) && player.isOnGround()) {
-            player.velocityY = -12;
-            SoundManager.getInstance().playJump();  // AJOUTE ÇA
-            changeState(player, new JumpingState(), "JUMPING");
+            player.velocityY = -10;
+            SoundManager.getInstance().playJump();
+            jumpTimer = 0;           // reset du timer pour le prochain double jump
+            canDoubleJump = true;    // on réactive le double jump après chaque atterrissage
+            logger.logState("Player: Saut normal depuis le sol");
+            // On reste dans JumpingState (ou on y passe si on était ailleurs)
+            player.setState(this);   // this = JumpingState actuel
         }
     }
 

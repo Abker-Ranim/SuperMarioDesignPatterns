@@ -16,10 +16,11 @@ public class ShieldDecorator extends PlayerDecorator {
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void updateDecorators() {
+        super.updateDecorators();
         if (System.currentTimeMillis() - startTime > duration) {
-            logger.logDecorator("Shield removed from Player");
+            logger.logDecorator("Shield expiré et retiré du Player");
+            getPlayer().renderablePlayer = this.decoratedPlayer;
         }
     }
 

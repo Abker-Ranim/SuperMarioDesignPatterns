@@ -5,11 +5,13 @@ import mariopatterns.gameobject.GameObject;
 import mariopatterns.gameobject.Platform;
 import mariopatterns.player.decorator.BasePlayer;
 import mariopatterns.player.decorator.PlayerComponent;
+import mariopatterns.player.decorator.SpeedBoostDecorator;
 import mariopatterns.player.state.IdleState;
 import mariopatterns.player.state.JumpingState;
 import mariopatterns.player.state.PlayerState;
 import mariopatterns.player.state.RunningState;
 import mariopatterns.utils.ImageLoader;
+import mariopatterns.utils.LoggerManager;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -47,8 +49,11 @@ public class Player {
         currentState.update(this);
         currentState.handleInput(this);
         animTimer++; // pour l'animation
+        renderablePlayer.updateDecorators();
     }
-
+    public void applySpeedBoost() {
+        renderablePlayer = new SpeedBoostDecorator(renderablePlayer);
+    }
     public void render(Graphics2D g) {
         BufferedImage currentSprite;
 
@@ -84,7 +89,12 @@ public class Player {
     }
 
     public void onCollisionWithEnemy() {
-        currentState.onCollisionWithEnemy(this);
+
+        if (!renderablePlayer.isInvincible()) {
+            currentState.onCollisionWithEnemy(this);
+        } else {
+            LoggerManager.getInstance().logCollision("Collision ennemie ignorée (bouclier actif) !");
+        }
     }
 
     public void keyPressed(int keyCode) { pressedKeys.add(keyCode); }
