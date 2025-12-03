@@ -1,5 +1,6 @@
 package mariopatterns.level;
 
+import mariopatterns.factory.GameObjectFactory;
 import mariopatterns.game.GameContext;
 import mariopatterns.game.state.VictoryState;
 import mariopatterns.gameobject.*;
@@ -12,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LevelManager {
+
     private int currentLevel = 1;
     private final Player player;
     private CompositeGameObject currentLevelObjects;
     private final BufferedImage[] backgrounds = new BufferedImage[3];
     private boolean victoryTriggered = false;
-
 
     public LevelManager(Player player) {
         this.player = player;
@@ -30,66 +31,65 @@ public class LevelManager {
         currentLevel = level;
         victoryTriggered = false;
         currentLevelObjects = new CompositeGameObject();
-
         List<Platform> platforms = new ArrayList<>();
 
-        if (level == 1) { // Niveau 1 - Forêt
-            platforms.add(new Platform(0, 500, 200, 140));        // sol principal (invisible mais important)*
-            platforms.add(new Platform(300, 460, 320, 140));        // sol principal (invisible mais important)*
-            platforms.add(new Platform(10, 120, 180, 90));         // grande plateforme haut gauche*
-            platforms.add(new Platform(300, 210, 110, 30));       // petite plateforme flottante*
-            platforms.add(new Platform(450, 140, 100, 30));       // petite plateforme flottante
-            platforms.add(new Platform(120, 320, 140, 30));       // plateforme sous les caisses*
-            platforms.add(new Platform(650, 120, 250, 150));       // grande plateforme haut droite*
-            platforms.add(new Platform(380, 350, 180, 110));      // plateforme centrale droite*
-            platforms.add(new Platform(630, 500, 90, 60));        // petite plateforme bas droite
+        if (level == 1) {
+            // === PLATEFORMES via Factory ===
+            platforms.add(GameObjectFactory.createPlatform(0, 500, 200, 140));
+            platforms.add(GameObjectFactory.createPlatform(300, 460, 320, 140));
+            platforms.add(GameObjectFactory.createPlatform(10, 120, 180, 90));
+            platforms.add(GameObjectFactory.createPlatform(300, 210, 110, 30));
+            platforms.add(GameObjectFactory.createPlatform(450, 140, 100, 30));
+            platforms.add(GameObjectFactory.createPlatform(120, 320, 140, 30));
+            platforms.add(GameObjectFactory.createPlatform(650, 120, 250, 150));
+            platforms.add(GameObjectFactory.createPlatform(380, 350, 180, 110));
+            platforms.add(GameObjectFactory.createPlatform(630, 500, 90, 60));
 
-            // 1. Sur la grande plateforme haut gauche
-            Enemy enemyLeft = new Enemy(80, 80, player);           // x=80, y=120 → bien sur la plateforme
-            enemyLeft.setPlatform(platforms.get(2));
-            currentLevelObjects.add(enemyLeft);
+            // === ENNEMIS via Factory ===
+            Enemy enemy1 = (Enemy) GameObjectFactory.createEnemy("spiny", 80, 80, player);
+            enemy1.setPlatform(platforms.get(2));
+            currentLevelObjects.add(enemy1);
 
-            // 2. Sur la plateforme centrale droite (la plus grande du milieu)
-            Enemy enemyMiddle = new Enemy(460, 310, player);        // parfait au centre
-            enemyMiddle.setPlatform(platforms.get(7));
-            currentLevelObjects.add(enemyMiddle);
+            Enemy enemy2 = (Enemy) GameObjectFactory.createEnemy("spiny", 460, 310, player);
+            enemy2.setPlatform(platforms.get(7));
+            currentLevelObjects.add(enemy2);
 
-            // 3. Sur la grande plateforme haut droite
-            Enemy enemyRight = new Enemy(780, 80, player);         // bien posé sur la plateforme haute droite
-            enemyRight.setPlatform(platforms.get(6));
-            currentLevelObjects.add(enemyRight);
+            Enemy enemy3 = (Enemy) GameObjectFactory.createEnemy("spiny", 780, 80, player);
+            enemy3.setPlatform(platforms.get(6));
+            currentLevelObjects.add(enemy3);
 
-            SpeedItem speedItem = new SpeedItem(530, 400, player); // Exemple de position (ajustez : x=200, y=80, sur une plateforme)
-            currentLevelObjects.add(speedItem);
+            // === ITEM via Factory ===
+            currentLevelObjects.add(GameObjectFactory.createItem("speed", 530, 400, player));
 
+            // === DRAPEAU DE FIN via Factory ===
+            currentLevelObjects.add(GameObjectFactory.createGoal(740, 36, player));
 
+        } else if (level == 2) {
+            // Niveau 2 - Désert
+            platforms.add(GameObjectFactory.createPlatform(0, 480, 800, 120));
+            platforms.add(GameObjectFactory.createPlatform(50, 400, 180, 20));
+            platforms.add(GameObjectFactory.createPlatform(300, 350, 200, 20));
+            platforms.add(GameObjectFactory.createPlatform(600, 300, 150, 20));
 
-            GoalFlag goal = new GoalFlag(740, 36, player); // x=750, y=420 (sol = 500 → mât de 180px)
-            currentLevelObjects.add(goal);
-
-        } else { // Niveau 2 - Désert
-            platforms.add(new Platform(0, 480, 800, 120));     // sol
-            platforms.add(new Platform(50, 400, 180, 20));
-            platforms.add(new Platform(300, 350, 200, 20));
-            platforms.add(new Platform(600, 300, 150, 20));
+            // Exemple : un autre item + drapeau
+            currentLevelObjects.add(GameObjectFactory.createItem("speed", 400, 300, player));
+            currentLevelObjects.add(GameObjectFactory.createGoal(720, 380, player));
         }
 
-        // Ajouter les plateformes
+        // Ajout des plateformes dans le Composite
         platforms.forEach(currentLevelObjects::add);
-
     }
 
-
-
     public void update() {
-        // Si on est déjà en état Victory → ON NE FAIT PLUS RIEN ICI !
         GameContext gc = player.getGameContext();
         if (gc.getCurrentState() instanceof VictoryState) {
-            return; // On bloque tout : plus de détection, plus de chute, plus rien
+            return; // Tout est bloqué en victoire
         }
 
+        // Mise à jour des objets (ennemis, items, drapeau...)
         currentLevelObjects.update();
 
+        // PLUS DE DÉTECTION AUTOMATIQUE PAR X → victoire UNIQUEMENT via GoalFlag !
     }
 
     public void render(Graphics2D g) {
@@ -97,7 +97,6 @@ public class LevelManager {
         currentLevelObjects.render(g);
     }
 
-    // AJOUTÉ – INDISPENSABLE POUR LE SAUT
     public CompositeGameObject getCurrentLevelObjects() {
         return currentLevelObjects;
     }
@@ -106,10 +105,11 @@ public class LevelManager {
         return currentLevel;
     }
 
+    // Méthode appelée par GoalFlag quand Mario touche le drapeau
     public void triggerVictory() {
         if (!victoryTriggered) {
             victoryTriggered = true;
-            player.getGameContext().setState(new mariopatterns.game.state.VictoryState());
+            player.getGameContext().setState(new VictoryState());
         }
     }
 }
