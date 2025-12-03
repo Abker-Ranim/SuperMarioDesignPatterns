@@ -14,19 +14,15 @@ public class LoggerManager {
     private LoggerManager() {
         logger = Logger.getLogger("MarioGameLogger");
         logger.setLevel(Level.ALL);
-        logger.setUseParentHandlers(false); // désactive la console par défaut
+        logger.setUseParentHandlers(false); // Désactive la console par défaut
 
         try {
-            // Crée (ou ouvre) le fichier game.log à la racine du projet
-            FileHandler fileHandler = new FileHandler("game.log", true);
+            FileHandler fileHandler = new FileHandler("game.log", true); // append = true
             fileHandler.setFormatter(new SimpleFormatter() {
                 @Override
                 public String format(LogRecord record) {
                     String timestamp = LocalDateTime.now().format(dtf);
-                    return String.format("[%s] [%s] %s%n",
-                            timestamp,
-                            record.getLevel(),
-                            record.getMessage());
+                    return String.format("[%s] [%s] %s%n", timestamp, record.getLevel(), record.getMessage());
                 }
             });
             logger.addHandler(fileHandler);
@@ -42,18 +38,28 @@ public class LoggerManager {
         return instance;
     }
 
+    // États du joueur
     public void logState(String message) {
         logger.info("[STATE] " + message);
     }
 
-    public void logDecorator(String message) {
-        logger.info("[DECORATOR] " + message);
+    // Décorateurs : application
+    public void logDecoratorApplied(String decoratorType, Object target, long durationMs) {
+        String duration = durationMs > 0 ? " (duration: " + durationMs + "ms)" : "";
+        logger.info(String.format("[DECORATOR] %s applied to %s%s", decoratorType, target.getClass().getSimpleName(), duration));
     }
 
+    // Décorateurs : retrait
+    public void logDecoratorRemoved(String decoratorType, Object target) {
+        logger.info(String.format("[DECORATOR] %s removed from %s", decoratorType, target.getClass().getSimpleName()));
+    }
+
+    // Info générale
     public void logInfo(String message) {
         logger.info("[INFO] " + message);
     }
 
+    // Collisions
     public void logCollision(String message) {
         logger.info("[COLLISION] " + message);
     }
