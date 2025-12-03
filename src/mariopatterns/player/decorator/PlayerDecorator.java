@@ -29,4 +29,8 @@ public abstract class PlayerDecorator implements PlayerComponent {
     public void updateDecorators() {
         decoratedPlayer.updateDecorators();
     }
+
+    public PlayerComponent getDecoratedPlayer() {
+        return decoratedPlayer;
+    }
 }

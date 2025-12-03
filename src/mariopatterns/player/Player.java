@@ -6,6 +6,7 @@ import mariopatterns.gameobject.Platform;
 import mariopatterns.observer.PlayerObserver;
 import mariopatterns.player.decorator.BasePlayer;
 import mariopatterns.player.decorator.PlayerComponent;
+import mariopatterns.player.decorator.ShieldDecorator;
 import mariopatterns.player.decorator.SpeedBoostDecorator;
 import mariopatterns.player.state.IdleState;
 import mariopatterns.player.state.JumpingState;
@@ -13,6 +14,8 @@ import mariopatterns.player.state.PlayerState;
 import mariopatterns.player.state.RunningState;
 import mariopatterns.utils.ImageLoader;
 import mariopatterns.utils.LoggerManager;
+import mariopatterns.player.decorator.SpeedBoostDecorator;
+import mariopatterns.player.decorator.ShieldDecorator;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -53,6 +56,7 @@ public class Player {
         currentState.handleInput(this);
         animTimer++; // pour l'animation
         renderablePlayer.updateDecorators();
+
     }
     public void applySpeedBoost() {
         renderablePlayer = new SpeedBoostDecorator(renderablePlayer);
@@ -148,5 +152,18 @@ public class Player {
 
     private void notifyCoinCollected() {
         observers.forEach(PlayerObserver::onCoinCollected);
+    }
+
+
+    public void updateDecorators() {
+        // SpeedBoost expiré ?
+        if (renderablePlayer instanceof SpeedBoostDecorator speedDec && !speedDec.isActive()) {
+            renderablePlayer = speedDec.getDecoratedPlayer();
+        }
+
+        // Shield expiré ? (quand tu l'ajouteras)
+        if (renderablePlayer instanceof ShieldDecorator shieldDec && !shieldDec.isActive()) {
+            renderablePlayer = shieldDec.getDecoratedPlayer();
+        }
     }
 }
