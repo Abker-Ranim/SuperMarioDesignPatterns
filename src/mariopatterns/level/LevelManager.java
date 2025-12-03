@@ -90,11 +90,6 @@ public class LevelManager {
 
         currentLevelObjects.update();
 
-        // Détection de fin de niveau (seulement si on n'est PAS déjà en Victory)
-        if (player.x > 750 && !victoryTriggered) {
-            victoryTriggered = true;
-            gc.setState(new VictoryState());
-        }
     }
 
     public void render(Graphics2D g) {
